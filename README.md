@@ -10,7 +10,7 @@
 
 [Delphi](https://www.embarcadero.com/products/delphi) implementation of JWT (JSON Web Token) and the JOSE (JSON Object Signing and Encryption) specification suite. This library supports the JWS (JWE support is planned) compact serializations with several JOSE algorithms.
 
-![Image of Delphi-JOSE Demo](https://paolo-rossi.github.io/delphi-jose-jwt/images/jose-delphi.png)
+![Image of Delphi-JOSE Demo](https://user-images.githubusercontent.com/4686497/103456073-1485a980-4cf3-11eb-8bac-295198ba508b.png)
 
 
 ## :books: Articles about using Delphi-JOSE
@@ -27,18 +27,18 @@ Prior to Delphi 10 Seattle the the HMAC-SHA algorithm uses OpenSSL through the I
 
 In Delphi 10 Seattle or newer Delphi versions the HMAC algorithm is also is the System.Hash unit so OpenSSL is not needed.
 
-#### HMAC using RSA algorithm
-The HMAC-RSA algorithm uses necessarily OpenSSL so if you plan to use this algorithm to sign your token you have to download and deploy OpenSSL (on the server).
+#### HMAC using RSA or ECDSA algorithm
+The HMAC-RSA(ECDSA) algorithm uses necessarily OpenSSL so if you plan to use these algorithms to sign your token you have to download and deploy OpenSSL (on the server).
 
 #### Client-side considerations
 Please keep in mind that the client doesn't have to generate or verify the token (using SHA or RSA) so on the client-side there's no need for the OpenSSL DLLs.
 
 #### OpenSSL download
-If you need the OpenSSL library on the server, you can download the package at the [fulgan website](https://indy.fulgan.com/SSL/) (keep in mind to always update to the latest version and to match you application's bitness)
+If you need the OpenSSL library on the server, you can download the package directly to the [Indy's GitHub project page](https://github.com/IndySockets/OpenSSL-Binaries) (keep in mind to always update to the latest version and to match you application's bitness)
 
 ## :question: What is JOSE
 
-[JOSE](https://tools.ietf.org/html/rfc7520) is a standard that provides a general approach to signing and encryption of any content. JOSE consists of several RFC:
+[JOSE](https://tools.ietf.org/html/rfc7520) is a standard that provides a general approach to the signing and encryption of any content. JOSE consists of several RFC:
 
 - [JWT (JSON Web Token)](https://tools.ietf.org/html/rfc7519) - describes representation of claims encoded in JSON
 - [JWS (JSON Web Signature)](https://tools.ietf.org/html/rfc7515) - describes producing and handling signed messages
@@ -54,16 +54,38 @@ If you need the OpenSSL library on the server, you can download the package at t
 #### Token deserialization
 - One method call to validate and deserialize a compact token
 
-#### Claims validation
-- `exp`, `iat`, `nbf`, `aud`, `iss`, `sub` claims validatation: supported
+#### Token & Claims validation (Consumer)
+
+| _Algorithms_ | _Supported_      | 
+| -------------| -----------      |
+|  `exp`       | ✔️               |
+|  `iat`       | ✔️               |
+|  `nbf`       | ✔️               |
+|  `aud`       | ✔️               |
+|  `iss`       | ✔️               |
+|  `jti`       | ✔️               |
+|  `typ`       | ✔️               |
+
+#### Easy to use classes for custom validation
+
 - Easy to use `TJOSEConsumer` and `TJOSEConsumerBuilder` classes to validate token with a fine granularity
 - Easy to write custom validators!
 
 #### Signing algorithms
-- `NONE algorithm`: supported (but discouraged)
-- `HS256`, `HS384`, `HS512 algorithms`: supported
-- `RS256`, `RS384`, `RS512 algorithms`: supported (thanks to [SirAlex](https://github.com/SirAlex))
-- `ES256`, `ES384`, `ES512` algorithms - not (yet) supported
+
+| _Algorithms_ | _Supported_      | 
+| -------------| -----------      |
+|  `None`      | ✔️ don't use! 💀 |
+|  `HS256`     | ✔️               |
+|  `HS384`     | ✔️               |
+|  `HS512`     | ✔️               |
+|  `RS256`     | ✔️ updated! 🔥   |
+|  `RS384`     | ✔️ updated! 🔥   |
+|  `RS512`     | ✔️ updated! 🔥   |
+|  `ES256`     | ✔️ new! 🌟      |
+|  `ES384`     | ✔️ new! 🌟      |
+|  `ES512`     | ✔️ new! 🌟      |
+|  `ES256K`    | ✔️ new! 🌟      |
 
 #### Security notes
 - This library is not affected by the `None` algorithm vulnerability
@@ -81,12 +103,11 @@ If you need the OpenSSL library on the server, you can download the package at t
 - Support of other crypto libraries (TMS Cryptography Pack, etc...)
 
 ##### Code
-- Unit Tests
+- More unit tests
 - More examples
 
-
 ## :cookie: Prerequisite
-This library has been tested with **Delphi 10.4 Sydney**, **Delphi 10.3 Rio**, **Delphi 10.2 Tokyo**, **Delphi 10.1 Berlin**, and **Delphi 10.0 Seattle** but with some work it should compile with **D2010 and higher** but I have not tried or tested this, if you succeed in this task I will be happy to create a branch of your work!
+This library has been tested with **Delphi 10.4 Sydney**, **Delphi 10.3 Rio**, **Delphi 10.2 Tokyo**, **Delphi 10.1 Berlin**, and **Delphi 10.0 Seattle** but with some work it should compile with **DXE6 and higher** but I have not tried or tested this, if you succeed in this task I will be happy to create a branch of your work!
 
 #### Libraries/Units dependencies
 This library has no dependencies on external libraries/units.
@@ -99,12 +120,12 @@ Delphi units used:
 - Indy units: IdHMAC, IdHMACSHA1, IdSSLOpenSSL, IdHash
 
 #### Indy notes
-- Please use always the latest version [from github](https://github.com/IndySockets/Indy)
+- Please use always the latest version [from GitHub](https://github.com/IndySockets/Indy)
 
 ## :floppy_disk: Installation
 Simply add the source path "Source/Common" and Source/JOSE" to your Delphi project path and.. you are good to go!
 
-## :scroll: Code Examples
+## :scroll: Quick Code Examples
 
 ### Creating a token
 To create a token, simply create an instance of the `TJWT` class and set the properties (claims).
@@ -144,12 +165,13 @@ var
 begin
   LToken := TJWT.Create;
   try
+    // Set your claims
     LToken.Claims.Subject := 'Paolo Rossi';
     LToken.Claims.Issuer := 'Delphi JOSE Library';
     LToken.Claims.IssuedAt := Now;
     LToken.Claims.Expiration := Now + 1;
 
-    // Signing algorithm
+    // Choose the signing algorithm
     case cbbAlgorithm.ItemIndex of
       0: LAlg := TJOSEAlgorithmId.HS256;
       1: LAlg := TJOSEAlgorithmId.HS384;
@@ -157,21 +179,29 @@ begin
     else LAlg := TJOSEAlgorithmId.HS256;
     end;
 
-    LSigner := TJWS.Create(LToken);
+    // Create your key from any text or TBytes
     LKey := TJWK.Create(edtSecret.Text);
-    try
-      // With this option you can have keys < algorithm length
-      LSigner.SkipKeyValidation := True;
-      LSigner.Sign(LKey, LAlg);
 
-      memoCompact.Lines.Add('Header: ' + LSigner.Header);
-      memoCompact.Lines.Add('Payload: ' + LSigner.Payload);
-      memoCompact.Lines.Add('Signature: ' + LSigner.Signature);
-      memoCompact.Lines.Add('Compact Token: ' + LSigner.CompactToken);
+    try
+      // Create the signer
+      LSigner := TJWS.Create(LToken);
+      try
+        // With this option you can have keys < algorithm length
+        LSigner.SkipKeyValidation := True;
+
+        // Sign the token!
+        LSigner.Sign(LKey, LAlg);
+
+        memoCompact.Lines.Add('Header: ' + LSigner.Header);
+        memoCompact.Lines.Add('Payload: ' + LSigner.Payload);
+        memoCompact.Lines.Add('Signature: ' + LSigner.Signature);
+        memoCompact.Lines.Add('Compact Token: ' + LSigner.CompactToken);
+      finally
+        LSigner.Free;
+      end;
     finally
       LKey.Free;
-      LSigner.Free;
-    end;
+    end;  
   finally
     LToken.Free;
   end;
@@ -190,8 +220,10 @@ var
   LKey: TJWK;
   LToken: TJWT;
 begin
+  // Create the key from a text or TBytes
   LKey := TJWK.Create('my_very_long_and_safe_secret_key');
-  // Unpack and verify the token
+
+  // Unpack and verify the token!
   LToken := TJOSE.Verify(LKey, FCompactToken);
 
   if Assigned(LToken) then
@@ -215,10 +247,11 @@ Using the new class `TJOSEConsumer` it's very easy to validate the token's claim
 
 ```delphi
 var
-  LConsumer: TJOSEConsumer;
+  LConsumer: IJOSEConsumer;
 begin
   LConsumer := TJOSEConsumerBuilder.NewConsumer
     .SetClaimsClass(TJWTClaims)
+
     // JWS-related validation
     .SetVerificationKey(edtConsumerSecret.Text)
     .SetSkipVerificationKeyValidation
@@ -239,12 +272,13 @@ begin
     .Build();
 
   try
+    // Process the token with your rules!
     LConsumer.Process(Compact);
   except
+    // (optionally) log the errors
     on E: Exception do
       memoLog.Lines.Add(E.Message);
   end;
-  LConsumer.Free;
 ```
 
 <hr />

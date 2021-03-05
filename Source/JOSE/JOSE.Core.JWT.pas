@@ -1,7 +1,7 @@
 {******************************************************************************}
 {                                                                              }
 {  Delphi JOSE Library                                                         }
-{  Copyright (c) 2015-2019 Paolo Rossi                                         }
+{  Copyright (c) 2015-2021 Paolo Rossi                                         }
 {  https://github.com/paolo-rossi/delphi-jose-jwt                              }
 {                                                                              }
 {******************************************************************************}
@@ -110,6 +110,10 @@ type
     procedure SetAudienceArray(const AValue: TArray<string>);
   public
     constructor Create; virtual;
+
+    procedure SetAsJSON(AClaims: TJSONObject); overload;
+    procedure SetAsJSON(const AClaims: string); overload;
+
     procedure SetClaimOfType<T>(const AName: string; const AValue: T);
     function GenerateJWTId(ANumberOfBytes: Integer = 16): string;
 
@@ -146,6 +150,8 @@ type
     constructor Create(AClaimsClass: TJWTClaimsClass); overload;
     destructor Destroy; override;
 
+    procedure Clear;
+
     function GetClaimsAs<T: TJWTClaims>: T; deprecated;
     function ClaimsAs<T: TJWTClaims>: T;
 
@@ -167,6 +173,13 @@ end;
 function TJWT.ClaimsAs<T>: T;
 begin
   Result := FClaims as T;
+end;
+
+procedure TJWT.Clear;
+begin
+  Header.Clear;
+  Claims.Clear;
+  Verified := False;
 end;
 
 constructor TJWT.Create(AClaimsClass: TJWTClaimsClass);
@@ -301,6 +314,20 @@ end;
 function TJWTClaims.GetSubject: string;
 begin
   Result := TJSONUtils.GetJSONValue(TReservedClaimNames.SUBJECT, FJSON).AsString;
+end;
+
+procedure TJWTClaims.SetAsJSON(const AClaims: string);
+var
+  LJSON: TJSONObject;
+begin
+  LJSON := FJSON.ParseJSONValue(AClaims) as TJSONObject;
+  SetAsJSON(LJSON);
+end;
+
+procedure TJWTClaims.SetAsJSON(AClaims: TJSONObject);
+begin
+  FJSON.Free;
+  FJSON := AClaims;
 end;
 
 procedure TJWTClaims.SetAudience(const AValue: string);

@@ -1,7 +1,7 @@
 {******************************************************************************}
 {                                                                              }
 {  Delphi JOSE Library                                                         }
-{  Copyright (c) 2015-2019 Paolo Rossi                                         }
+{  Copyright (c) 2015-2021 Paolo Rossi                                         }
 {  https://github.com/paolo-rossi/delphi-jose-jwt                              }
 {                                                                              }
 {******************************************************************************}
@@ -27,10 +27,10 @@ uses
   System.SysUtils, System.Classes, System.Rtti, System.JSON;
 
 type
+
   TTestUtils = class
   public
     class function ExpectedFromFile(const AFileName: string): string;
-  public
   end;
 
 implementation

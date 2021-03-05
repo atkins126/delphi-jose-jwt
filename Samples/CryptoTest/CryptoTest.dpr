@@ -1,7 +1,7 @@
 {******************************************************************************}
 {                                                                              }
 {  Delphi JOSE Library                                                         }
-{  Copyright (c) 2015-2019 Paolo Rossi                                         }
+{  Copyright (c) 2015-2021 Paolo Rossi                                         }
 {  https://github.com/paolo-rossi/delphi-jose-jwt                              }
 {                                                                              }
 {******************************************************************************}
@@ -19,38 +19,24 @@
 {  limitations under the License.                                              }
 {                                                                              }
 {******************************************************************************}
-unit JOSE.Tests.JWA;
 
-interface
+program CryptoTest;
 
 uses
-  System.Rtti, DUnitX.TestFramework,
+  Vcl.Forms,
+  JOSE.OpenSSL.Headers in '..\..\Source\Common\JOSE.OpenSSL.Headers.pas',
+  JOSE.Signing.Base in '..\..\Source\Common\JOSE.Signing.Base.pas',
+  Crypto.Form.SSL in 'Crypto.Form.SSL.pas' {frmCryptoSSL},
+  Crypto.Form.ECDSA in 'Crypto.Form.ECDSA.pas' {frmCryptoECDSA},
+  Crypto.Form.RSA in 'Crypto.Form.RSA.pas' {frmCryptoRSA},
+  Crypto.Form.Main in 'Crypto.Form.Main.pas' {frmMain};
 
-  JOSE.Core.JWA;
+{$R *.res}
 
-type
-  [TestFixture]
-  TTestJWA = class(TObject)
-  public
-    [Setup]
-    procedure Setup;
-    [TearDown]
-    procedure TearDown;
-  end;
-
-implementation
-
-procedure TTestJWA.Setup;
 begin
-
-end;
-
-procedure TTestJWA.TearDown;
-begin
-end;
-
-initialization
-  TDUnitX.RegisterTestFixture(TTestJWA);
-
+  ReportMemoryLeaksOnShutdown := True;
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrmMain, frmMain);
+  Application.Run;
 end.
-

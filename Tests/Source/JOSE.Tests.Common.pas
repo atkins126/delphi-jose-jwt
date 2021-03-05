@@ -1,7 +1,7 @@
 ﻿{******************************************************************************}
 {                                                                              }
 {  Delphi JOSE Library                                                         }
-{  Copyright (c) 2015-2019 Paolo Rossi                                         }
+{  Copyright (c) 2015-2021 Paolo Rossi                                         }
 {  https://github.com/paolo-rossi/delphi-jose-jwt                              }
 {                                                                              }
 {******************************************************************************}
@@ -31,11 +31,13 @@ uses
   JOSE.Signing.RSA,
   JOSE.Types.Arrays,
   JOSE.Types.JSON,
-  JOSE.Encoding.Base64;
+  JOSE.Encoding.Base64,
+
+  JOSE.Tests.Classes;
 
 type
   [TestFixture]
-  TTestJOSEBytes = class
+  TTestJOSEBytes = class(TTestBase)
   public
     [Test]
     [TestCase('TestImplicit', 'aBc')]
@@ -73,7 +75,7 @@ type
   end;
 
   [TestFixture]
-  TTestBase64 = class
+  TTestBase64 = class(TTestBase)
   public
     [Test]
     [TestCase('TestEncodeString', 'paolo,cGFvbG8=')]
@@ -85,7 +87,7 @@ type
   end;
 
   [TestFixture]
-  TTestHMAC = class
+  TTestHMAC = class(TTestBase)
   public
     [Test]
     [TestCase('TestSignSHA256', 'plaintext,secret,XXv4q83DfQItSR7PCiZwWFlG10ah668c1cRsrKh6Ylg=')]

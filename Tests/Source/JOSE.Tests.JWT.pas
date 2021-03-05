@@ -1,7 +1,7 @@
 {******************************************************************************}
 {                                                                              }
 {  Delphi JOSE Library                                                         }
-{  Copyright (c) 2015-2019 Paolo Rossi                                         }
+{  Copyright (c) 2015-2021 Paolo Rossi                                         }
 {  https://github.com/paolo-rossi/delphi-jose-jwt                              }
 {                                                                              }
 {******************************************************************************}
@@ -26,11 +26,12 @@ interface
 uses
   System.Rtti, DUnitX.TestFramework,
 
-  JOSE.Core.JWT;
+  JOSE.Core.JWT,
+  JOSE.Tests.Classes;
 
 type
   [TestFixture]
-  TTestJWT = class(TObject)
+  TTestJWT = class(TTestBase)
   public
     [Setup]
     procedure Setup;
