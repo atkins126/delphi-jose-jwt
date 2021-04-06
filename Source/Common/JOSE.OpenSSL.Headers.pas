@@ -51,6 +51,7 @@ type
     fn_SSLeay_version = 'SSLeay_version';
 
     fn_PEM_read_bio_PUBKEY = 'PEM_read_bio_PUBKEY';
+    fn_PEM_write_bio_PUBKEY = 'PEM_write_bio_PUBKEY';
     fn_PEM_read_bio_RSA_PUBKEY = 'PEM_read_bio_RSA_PUBKEY';
     fn_PEM_read_bio_ECPrivateKey = 'PEM_read_bio_ECPrivateKey';
     fn_EVP_MD_CTX_create = 'EVP_MD_CTX_create';
@@ -103,7 +104,8 @@ type
   public class var
     SSLeay_version: function(_type: Integer): PAnsiChar cdecl;
 
-    PEM_read_bio_PUBKEY: function(bp: pBIO; x: PPEVP_PKEY; cb: ppem_password_cb; u: Pointer): PEVP_PKEY; cdecl;
+    PEM_read_bio_PUBKEY: function(bp: PBIO; x: PPEVP_PKEY; cb: ppem_password_cb; u: Pointer): PEVP_PKEY; cdecl;
+    PEM_write_bio_PUBKEY: function(bp: PBIO; x: PEVP_PKEY): Integer; cdecl;
     PEM_read_bio_RSA_PUBKEY: function(bp: PBIO; x: PPRSA; cb: ppem_password_cb; u: Pointer): PRSA cdecl;
     PEM_read_bio_ECPrivateKey: function(bp: PBIO; key: PPEC_KEY; cb: ppem_password_cb; u: Pointer): PEC_KEY cdecl;
 
@@ -123,9 +125,9 @@ type
     BN_dup: function(const _from: PBIGNUM): PBIGNUM cdecl;
     BN_clear_free: procedure(a: PBIGNUM); cdecl;
 
-    SHA256: function (const d: PBytes; n: SIZE_T; md: PBytes): PBytes cdecl;
-    SHA384: function (const d: PBytes; n: SIZE_T; md: PBytes): PBytes cdecl;
-    SHA512: function (const d: PBytes; n: SIZE_T; md: PBytes): PBytes cdecl;
+    SHA256: function (const d: PBytes; n: NativeUInt; md: PBytes): PBytes cdecl;
+    SHA384: function (const d: PBytes; n: NativeUInt; md: PBytes): PBytes cdecl;
+    SHA512: function (const d: PBytes; n: NativeUInt; md: PBytes): PBytes cdecl;
 
     RSA_size: function (const rsa: PRSA): Integer cdecl;
     RSA_sign: function(_type: Integer; m: PBytes; m_len: Cardinal; sigret: PBytes; siglen: PCardinal; rsa: PRSA): Integer; cdecl;
@@ -215,6 +217,7 @@ begin
   @SSLeay_version := LoadFunctionCLib(fn_SSLeay_version);
 
   @PEM_read_bio_PUBKEY := LoadFunctionCLib(fn_PEM_read_bio_PUBKEY);
+  @PEM_write_bio_PUBKEY := LoadFunctionCLib(fn_PEM_write_bio_PUBKEY);
   @PEM_read_bio_RSA_PUBKEY := LoadFunctionCLib(fn_PEM_read_bio_RSA_PUBKEY);
   @PEM_read_bio_ECPrivateKey := LoadFunctionCLib(fn_PEM_read_bio_ECPrivateKey);
 
@@ -263,6 +266,7 @@ end;
 class procedure JoseSSL.Unload;
 begin
   @PEM_read_bio_PUBKEY := nil;
+  @PEM_write_bio_PUBKEY := nil;
   @PEM_read_bio_RSA_PUBKEY := nil;
   @PEM_read_bio_ECPrivateKey := nil;
   @EVP_MD_CTX_create := nil;
